@@ -13,7 +13,7 @@ terraform {
   backend "s3" {
     bucket         = "my-terraform-state-bucket-aarvika"   # Replace with your S3 bucket
     key            = "env/dev/terraform.tfstate"  # Path within the bucket
-    region         = "us-west-2"                   # AWS region
+    region         = "us-east-2"                   # AWS region
     dynamodb_table = "terraform-locks"             # DynamoDB table name
     encrypt        = true                          # Encrypt state file at rest
   }
@@ -269,7 +269,7 @@ resource "aws_eks_node_group" "node_group" {
 
 
 variable "region" {
-  default     = "us-west-2"
+  default     = "us-east-2"
   description = "AWS region"
 }
 
