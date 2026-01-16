@@ -1,0 +1,16 @@
+name: Terraform Drift Detection
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:      # Manual triggering for testing
+
+permissions:
+  id-token: write    # AWS OIDC authentication
+  contents: read     # Repository checkout
+  issues: write      # GitHub issue creation
+
+jobs:
+  detect-drift: # Job name - steps will be added below
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
