@@ -38,15 +38,15 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan (PR)
-        if: github.event_name == 'pull_request'
+        # if: github.event_name == 'pull_request'
         run: terraform plan -input=false -no-color -out=tfplan
 
       - name: Show Plan Output
-        if: github.event_name == 'pull_request'
+        # if: github.event_name == 'pull_request'
         run: terraform show -no-color tfplan > plan.txt
 
       # - name: Comment Plan on PR
-      #   if: github.event_name == 'pull_request'
+          #if: github.event_name == 'pull_request'
       #   uses: actions/github-script@v7
       #   with:
       #     script: |
