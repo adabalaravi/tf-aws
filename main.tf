@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.6.0"
+  required_version = ">= 1.5.0"
 
   required_providers {
     aws = {
@@ -11,11 +11,11 @@ terraform {
 
 terraform {
   backend "s3" {
-    bucket       = "tfstate-bucket-aarvika"
-    key          = "env/dev/terraform.tfstate"
-    region       = "us-east-2"
-    encrypt      = true
-    use_lockfile = true
+    bucket         = "tfstate-bucket-aarvika"    # Replace with your S3 bucket
+    key            = "env/dev/terraform.tfstate" # Path within the bucket
+    region         = "us-east-2"                 # AWS region
+    dynamodb_table = "terraform-lock-table"      # DynamoDB table name
+    encrypt        = true                        # Encrypt state file at rest
   }
 }
 
