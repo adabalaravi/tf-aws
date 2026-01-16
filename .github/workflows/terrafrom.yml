@@ -3,6 +3,13 @@ name: Terraform AWS Provisioning (OIDC)
 on:
   push:
     branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'terraform action'
+        type: string
+        required: true
+        default: 'apply'
 
 permissions:
   id-token: write     # REQUIRED for OIDC
@@ -60,6 +67,5 @@ jobs:
       #         body
       #       });
 
-      - name: Terraform Apply (main)
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -input=false -auto-approve
+      - name: Terraform action (main)
+        run: terraform ${{ github.event.inputs.action }} -input=false -auto-approve
