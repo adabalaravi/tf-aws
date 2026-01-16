@@ -6,10 +6,11 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: 'terraform action'
-        type: string
         required: true
-        default: 'apply'
+        type: choice
+        options:
+        - apply
+        - destory
 
 permissions:
   id-token: write     # REQUIRED for OIDC
