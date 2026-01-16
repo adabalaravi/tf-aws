@@ -187,7 +187,7 @@ resource "aws_iam_role_policy_attachment" "eks_vpc_resource_controller" {
 #EKS Cluster
 ##--------------------------
 resource "aws_eks_cluster" "eks_cluster" {
-  name     = "vault-eks-cluster"
+  name     = "eks-cluster"
   role_arn = aws_iam_role.eks_cluster_role.arn
   version  = var.cluster_version
 

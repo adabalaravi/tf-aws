@@ -60,6 +60,6 @@ jobs:
       #         body
       #       });
 
-      # - name: Terraform Apply (main)
-      #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      #   run: terraform apply -input=false -auto-approve
+      - name: Terraform Apply (main)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -input=false -auto-approve
