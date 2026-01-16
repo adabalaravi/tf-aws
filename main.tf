@@ -11,7 +11,7 @@ terraform {
 
 terraform {
   backend "s3" {
-    bucket         = "my-terraform-state-bucket-aarvika"   # Replace with your S3 bucket
+    bucket         = "state-bucket-aarvika"   # Replace with your S3 bucket
     key            = "env/dev/terraform.tfstate"  # Path within the bucket
     region         = "us-east-2"                   # AWS region
     dynamodb_table = "terraform-locks"             # DynamoDB table name
