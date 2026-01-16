@@ -1,8 +1,6 @@
 name: Terraform AWS Provisioning (OIDC)
 
 on:
-  push:
-    branches: ["main"]
   workflow_dispatch:
     inputs:
       action:
