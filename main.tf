@@ -11,11 +11,11 @@ terraform {
 
 terraform {
   backend "s3" {
-    bucket         = "tfstate-bucket-aarvika"   # Replace with your S3 bucket
-    key            = "env/dev/terraform.tfstate"  # Path within the bucket
-    region         = "us-east-2"                   # AWS region
-    dynamodb_table = "terraform-locks"             # DynamoDB table name
-    encrypt        = true                          # Encrypt state file at rest
+    bucket         = "tfstate-bucket-aarvika"    # Replace with your S3 bucket
+    key            = "env/dev/terraform.tfstate" # Path within the bucket
+    region         = "us-east-2"                 # AWS region
+    dynamodb_table = "terraform-locks"           # DynamoDB table name
+    encrypt        = true                        # Encrypt state file at rest
   }
 }
 
