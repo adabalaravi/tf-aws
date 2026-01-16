@@ -1,8 +1,7 @@
 name: Terraform Drift Detection
 
 on:
-  schedule:
-    - cron: '*/5 * * * *'
+ 
   workflow_dispatch:      # Manual triggering for testing
 
 permissions:
