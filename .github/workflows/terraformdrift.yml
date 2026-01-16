@@ -18,3 +18,46 @@ jobs:
     steps:
         - name: Checkout
           uses: actions/checkout@v4
+
+        - name: Configure AWS Credentials (OIDC)
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+             role-to-assume: arn:aws:iam::387030538435:role/Githubactions
+             aws-region: us-east-2
+
+        - name: Setup Terraform
+          uses: hashicorp/setup-terraform@v3
+          with:
+            terraform_version: 1.7.5
+
+        - name: Initialize Terraform
+          run: |
+            terraform init \
+            -backend-config="key=env/dev/terraform.tfstate" \
+            -input=false
+
+        - name: Detect Drift
+          id: plan
+          run: |
+            set +e  # Continue on non-zero exit codes
+            terraform plan \
+            -detailed-exitcode \
+            -no-color \
+            -input=false \
+            -out=tfplan \
+            > plan_output.txt 2>&1
+
+            PLAN_EXIT_CODE=$?
+            echo "exitcode=$PLAN_EXIT_CODE" >> $GITHUB_OUTPUT
+
+            if [ $PLAN_EXIT_CODE -eq 0 ]; then
+                echo "✅ No drift detected in ${{ matrix.environment }}"
+                echo "drift_detected=false" >> $GITHUB_OUTPUT
+            elif [ $PLAN_EXIT_CODE -eq 2 ]; then
+                echo "⚠️ Drift detected in ${{ matrix.environment }}"
+                echo "drift_detected=true" >> $GITHUB_OUTPUT
+            else
+                echo "❌ Error running plan for ${{ matrix.environment }}"
+                cat plan_output.txt
+                exit 1
+            fi
