@@ -1,0 +1,65 @@
+name: Terraform AWS Provisioning (OIDC)
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  id-token: write     # REQUIRED for OIDC
+  contents: read
+  pull-requests: write  # for PR comments (plan output)
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::387030538435:role/Githubactions
+          aws-region: us-east-2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.5
+
+      - name: Terraform Init
+        run: terraform init -input=false
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan (PR)
+        if: github.event_name == 'pull_request'
+        run: terraform plan -input=false -no-color -out=tfplan
+
+      - name: Show Plan Output
+        if: github.event_name == 'pull_request'
+        run: terraform show -no-color tfplan > plan.txt
+
+      # - name: Comment Plan on PR
+      #   if: github.event_name == 'pull_request'
+      #   uses: actions/github-script@v7
+      #   with:
+      #     script: |
+      #       const fs = require('fs');
+      #       const plan = fs.readFileSync('infra/plan.txt', 'utf8');
+      #       const body = `## Terraform Plan\n\`\`\`\n${plan.substring(0, 65000)}\n\`\`\``;
+      #       github.rest.issues.createComment({
+      #         issue_number: context.issue.number,
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         body
+      #       });
+
+      # - name: Terraform Apply (main)
+      #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      #   run: terraform apply -input=false -auto-approve
