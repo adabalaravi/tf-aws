@@ -1,0 +1,197 @@
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Action": [
+				"iam:TagRole",
+				"iam:UntagRole"
+			],
+			"Resource": "arn:aws:iam::387030538435:role/*"
+		},
+		{
+			"Sid": "AllowDeleteSpecificCluster",
+			"Effect": "Allow",
+			"Action": "eks:DeleteCluster",
+			"Resource": "arn:aws:eks:us-east-2:387030538435:cluster/eks-cluster"
+		},
+		{
+			"Sid": "ReadOnlyForDiscovery",
+			"Effect": "Allow",
+			"Action": [
+				"sts:GetCallerIdentity",
+				"ec2:Describe*",
+				"eks:Describe*",
+				"eks:List*",
+				"iam:Get*",
+				"iam:List*",
+				"rds:Describe*",
+				"dynamodb:Describe*",
+				"dynamodb:List*",
+				"s3:ListAllMyBuckets",
+				"s3:GetBucketLocation",
+				"cloudwatch:ListMetrics",
+				"logs:DescribeLogGroups",
+				"logs:DescribeLogStreams"
+			],
+			"Resource": "*"
+		},
+		{
+			"Sid": "S3StateBucketAccess",
+			"Effect": "Allow",
+			"Action": [
+				"s3:ListBucket"
+			],
+			"Resource": "arn:aws:s3:::tfstate-bucket-aarvika"
+		},
+		{
+			"Sid": "S3StateObjectAccess",
+			"Effect": "Allow",
+			"Action": [
+				"s3:GetObject",
+				"s3:PutObject",
+				"s3:DeleteObject"
+			],
+			"Resource": "arn:aws:s3:::tfstate-bucket-aarvika/*"
+		},
+		{
+			"Sid": "DynamoDBTerraformLockTable",
+			"Effect": "Allow",
+			"Action": [
+				"dynamodb:GetItem",
+				"dynamodb:PutItem",
+				"dynamodb:DeleteItem",
+				"dynamodb:UpdateItem",
+				"dynamodb:DescribeTable"
+			],
+			"Resource": "arn:aws:dynamodb:us-east-2:387030538435:table/terraform-lock-table"
+		},
+		{
+			"Sid": "NetworkAndEKSProvisioning",
+			"Effect": "Allow",
+			"Action": [
+				"ec2:CreateVpc",
+				"ec2:DeleteVpc",
+				"ec2:ModifyVpcAttribute",
+				"ec2:CreateSubnet",
+				"ec2:DeleteSubnet",
+				"ec2:ModifySubnetAttribute",
+				"ec2:CreateInternetGateway",
+				"ec2:AttachInternetGateway",
+				"ec2:DetachInternetGateway",
+				"ec2:DeleteInternetGateway",
+				"ec2:CreateRouteTable",
+				"ec2:AssociateRouteTable",
+				"ec2:DisassociateRouteTable",
+				"ec2:DeleteRouteTable",
+				"ec2:CreateRoute",
+				"ec2:DeleteRoute",
+				"ec2:CreateNatGateway",
+				"ec2:DeleteNatGateway",
+				"ec2:AllocateAddress",
+				"ec2:ReleaseAddress",
+				"ec2:CreateSecurityGroup",
+				"ec2:DeleteSecurityGroup",
+				"ec2:AuthorizeSecurityGroupIngress",
+				"ec2:RevokeSecurityGroupIngress",
+				"ec2:AuthorizeSecurityGroupEgress",
+				"ec2:RevokeSecurityGroupEgress",
+				"ec2:CreateTags",
+				"ec2:DeleteTags",
+				"eks:CreateCluster",
+				"eks:DeleteCluster",
+				"eks:UpdateClusterConfig",
+				"eks:UpdateClusterVersion",
+				"eks:CreateNodegroup",
+				"eks:DeleteNodegroup",
+				"eks:UpdateNodegroupConfig",
+				"eks:UpdateNodegroupVersion"
+			],
+			"Resource": "*"
+		},
+		{
+			"Sid": "RDSProvisioningLimited",
+			"Effect": "Allow",
+			"Action": [
+				"rds:CreateDBInstance",
+				"rds:ModifyDBInstance",
+				"rds:DeleteDBInstance",
+				"rds:CreateDBSubnetGroup",
+				"rds:DeleteDBSubnetGroup",
+				"rds:AddTagsToResource",
+				"rds:RemoveTagsFromResource"
+			],
+			"Resource": "*"
+		},
+		{
+			"Sid": "IAMCreateOnlyForEKSAndTerraform",
+			"Effect": "Allow",
+			"Action": [
+				"iam:CreateRole",
+				"iam:DeleteRole",
+				"iam:GetRole",
+				"iam:UpdateAssumeRolePolicy",
+				"iam:AttachRolePolicy",
+				"iam:DetachRolePolicy",
+				"iam:PutRolePolicy",
+				"iam:DeleteRolePolicy",
+				"iam:CreatePolicy",
+				"iam:DeletePolicy",
+				"iam:CreateInstanceProfile",
+				"iam:AddRoleToInstanceProfile",
+				"iam:RemoveRoleFromInstanceProfile",
+				"iam:DeleteInstanceProfile"
+			],
+			"Resource": [
+				"arn:aws:iam::387030538435:role/eks-*",
+				"arn:aws:iam::387030538435:role/terraform-*",
+				"arn:aws:iam::387030538435:policy/terraform-*",
+				"arn:aws:iam::387030538435:instance-profile/terraform-*"
+			]
+		},
+		{
+			"Sid": "AllowPassRoleOnlyToAWSServices",
+			"Effect": "Allow",
+			"Action": "iam:PassRole",
+			"Resource": [
+				"arn:aws:iam::387030538435:role/eks-*",
+				"arn:aws:iam::387030538435:role/terraform-*"
+			],
+			"Condition": {
+				"StringEquals": {
+					"iam:PassedToService": [
+						"eks.amazonaws.com",
+						"ec2.amazonaws.com"
+					]
+				}
+			}
+		},
+		{
+			"Sid": "DenyEverythingNotTaggedByTerraform",
+			"Effect": "Deny",
+			"Action": [
+				"ec2:DeleteVpc",
+				"ec2:DeleteSubnet",
+				"ec2:DeleteSecurityGroup",
+				"eks:DeleteCluster",
+				"rds:DeleteDBInstance"
+			],
+			"Resource": "*",
+			"Condition": {
+				"StringNotEquals": {
+					"aws:ResourceTag/ManagedBy": "Terraform"
+				}
+			}
+		},
+		{
+			"Sid": "AllowEKSTagging",
+			"Effect": "Allow",
+			"Action": [
+				"eks:TagResource",
+				"eks:UntagResource",
+				"eks:ListTagsForResource"
+			],
+			"Resource": "*"
+		}
+	]
+}
