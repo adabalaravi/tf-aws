@@ -8,7 +8,7 @@ on:
         type: choice
         options:
         - apply
-        - destory
+        - destroy
 
 permissions:
   id-token: write     # REQUIRED for OIDC
