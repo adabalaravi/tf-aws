@@ -275,6 +275,7 @@ resource "aws_eks_node_group" "node_group" {
 variable "aws_access_key_id" {
   default =  "AKIA1234567890ABCDEF"
 }
+
 variable "region" {
   default     = "us-east-2"
   description = "AWS region"
