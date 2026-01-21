@@ -1,0 +1,11 @@
+title = "Repo Secret Scanning Rules"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allow common false positives"
+paths = [
+  '''.*\.md$''',
+  '''.*\.txt$'''
+]
