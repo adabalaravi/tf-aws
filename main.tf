@@ -276,7 +276,9 @@ variable "aws_access_key_id" {
   default =  "AKIA1234567890ABCDEF"
 }
 
-
+variable "db_password " {
+  default = "ijkfhakljfa"
+}
 
 variable "region" {
   default     = "us-east-2"
