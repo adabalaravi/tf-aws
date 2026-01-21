@@ -293,6 +293,10 @@ variable "cluster_version" {
 #   default = "vault-eks-cluster"
 # }
 
+variable "master_password" {
+   default = "Adfsa$R@#DSFFDAt"
+}
+
 # variable "namespace" {
 #   default = "kube-system"
 # }
